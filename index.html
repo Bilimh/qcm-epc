@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QCM Droit du Travail - CAP Commerce</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .question-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .correct-answer {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        .incorrect-answer {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        .answer-card {
+            transition: all 0.3s ease;
+        }
+        .answer-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        .correct {
+            border: 3px solid #10b981;
+            background-color: #d1fae5;
+        }
+        .incorrect {
+            border: 3px solid #ef4444;
+            background-color: #fee2e2;
+        }
+        .selected {
+            border: 3px solid #3b82f6;
+            background-color: #dbeafe;
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .calc-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- Header -->
+        <header class="text-center mb-10 fade-in">
+            <div class="gradient-bg rounded-2xl p-8 mb-6 shadow-xl">
+                <h1 class="text-4xl font-bold text-white mb-3">📋 QCM Droit du Travail</h1>
+                <p class="text-xl text-white/90">CAP Équipier Polyvalent de Commerce</p>
+                <div class="mt-4 bg-white/20 rounded-lg p-4 inline-block">
+                    <p class="text-white font-semibold">Testez vos connaissances sur les contrats de travail</p>
+                </div>
+            </div>
+            
+            <div class="flex justify-center items-center space-x-4 mb-6">
+                <div class="bg-blue-100 rounded-full px-4 py-2">
+                    <span id="current-question" class="text-2xl font-bold text-blue-700">1</span>
+                    <span class="text-gray-600">/7</span>
+                </div>
+                <div class="text-lg text-gray-600">
+                    Score : <span id="score" class="font-bold text-green-600">0</span>/7
+                </div>
+            </div>
+        </header>
+
+        <!-- Questions Container -->
+        <div id="questions-container">
+            <!-- Questions will be inserted here by JavaScript -->
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-between mt-10 fade-in">
+            <button id="prev-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-3 px-6 rounded-xl transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed">
+                ← Question précédente
+            </button>
+            <button id="next-btn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-xl transition duration-300">
+                Question suivante →
+            </button>
+        </div>
+
+        <!-- Results -->
+        <div id="results" class="hidden mt-10 p-8 bg-gradient-to-r from-green-400 to-blue-500 rounded-2xl shadow-xl text-white text-center fade-in">
+            <h2 class="text-3xl font-bold mb-4">🎉 Quiz Terminé !</h2>
+            <p class="text-2xl mb-4">Votre score : <span id="final-score" class="text-4xl font-bold">0</span>/7</p>
+            <button id="restart-btn" class="bg-white text-blue-600 font-bold py-3 px-8 rounded-xl hover:bg-gray-100 transition duration-300 mt-4">
+                🔄 Recommencer le QCM
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                id: 1,
+                question: "Un CDD ne peut pas dépasser 18 mois au total. Si le premier CDD dure 8 mois, combien de mois maximum peut durer son renouvellement ?",
+                options: [
+                    { text: "8 mois", correct: false },
+                    { text: "10 mois", correct: true },
+                    { text: "12 mois", correct: false },
+                    { text: "18 mois", correct: false }
+                ],
+                explanation: "Le renouvellement maximum est de : 18 mois (total) - 8 mois (déjà effectués) = 10 mois restants.",
+                calculation: "18 - 8 = 10 mois"
+            },
+            {
+                id: 2,
+                question: "La durée maximale de travail est de 48 heures par semaine. Un salarié travaille 47 heures une semaine, puis 45 heures la suivante. Que peut-on dire ?",
+                options: [
+                    { text: "Il dépasse la limite", correct: false },
+                    { text: "Il est en infraction", correct: false },
+                    { text: "Il respecte la loi", correct: true },
+                    { text: "Il doit déclarer ses heures", correct: false }
+                ],
+                explanation: "Chaque semaine doit être inférieure à 48h. Ici : 47h < 48h et 45h < 48h, donc c'est conforme.",
+                calculation: "Semaine 1: 47h < 48h ✓<br>Semaine 2: 45h < 48h ✓"
+            },
+            {
+                id: 3,
+                question: "Parmi ces propositions, laquelle n'est pas un type de contrat cité dans le document ?",
+                options: [
+                    { text: "CDI", correct: false },
+                    { text: "CDD", correct: false },
+                    { text: "Apprentissage", correct: false },
+                    { text: "Télétravail", correct: true }
+                ],
+                explanation: "Les contrats cités sont : CDI, CDD, intérim, vendanges, saisonnier, apprentissage, professionnalisation.",
+                calculation: "7 types mentionnés - le télétravail n'en fait pas partie"
+            },
+            {
+                id: 4,
+                question: "Pendant la période d'essai, le délai de prévenance est de 24 heures. Si l'employeur annonce la rupture un lundi à 10h, à quelle date/heure prend-elle effet ?",
+                options: [
+                    { text: "Lundi à 18h", correct: false },
+                    { text: "Mardi à 10h", correct: true },
+                    { text: "Mercredi à 10h", correct: false },
+                    { text: "Immédiatement", correct: false }
+                ],
+                explanation: "Avec un délai de 24h : Lundi 10h + 24h = Mardi 10h.",
+                calculation: "Lundi 10h + 24h = Mardi 10h"
+            },
+            {
+                id: 5,
+                question: "Le temps plein représente 1607 heures par an. Combien d'heures travaille-t-on dans l'année avec un temps partiel à 80 % ?",
+                options: [
+                    { text: "1286 heures", correct: true },
+                    { text: "1400 heures", correct: false },
+                    { text: "1500 heures", correct: false },
+                    { text: "1607 heures", correct: false }
+                ],
+                explanation: "Calcul : Temps plein × 80% = heures du temps partiel.",
+                calculation: "1607 × 0,80 = 1285,6 heures ≈ 1286 heures"
+            },
+            {
+                id: 6,
+                question: "Taux horaire : 11 €. Majoration pour heures supplémentaires : +25 %. Pour 4 heures supplémentaires, quel est le gain supplémentaire brut ?",
+                options: [
+                    { text: "44 €", correct: false },
+                    { text: "50 €", correct: false },
+                    { text: "55 €", correct: true },
+                    { text: "60 €", correct: false }
+                ],
+                explanation: "1. Majoration par heure : 11€ × 25% = 2,75€<br>2. Taux HS : 11€ + 2,75€ = 13,75€<br>3. Gain : 4h × 13,75€ = 55€",
+                calculation: "11 × 0,25 = 2,75€<br>11 + 2,75 = 13,75€<br>4 × 13,75 = 55€"
+            },
+            {
+                id: 7,
+                question: "Salaire mensuel brut : 1500 €. Indemnité de la Sécurité sociale : 50 % du salaire journalier. Quelle indemnité journalière le salarié percevra-t-il ?",
+                options: [
+                    { text: "20 €", correct: false },
+                    { text: "25 €", correct: true },
+                    { text: "30 €", correct: false },
+                    { text: "50 €", correct: false }
+                ],
+                explanation: "1. Salaire journalier : Salaire mensuel ÷ 30 jours<br>2. Indemnité : Salaire journalier × 50%",
+                calculation: "1500 ÷ 30 = 50€ (journalier)<br>50 × 0,50 = 25€ (indemnité)"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let userAnswers = new Array(questions.length).fill(null);
+        let score = 0;
+
+        function renderQuestion() {
+            const container = document.getElementById('questions-container');
+            const q = questions[currentQuestion];
+            
+            container.innerHTML = `
+                <div class="fade-in">
+                    <div class="question-card rounded-2xl p-8 mb-8 shadow-xl">
+                        <div class="flex items-center mb-4">
+                            <div class="bg-white rounded-full w-12 h-12 flex items-center justify-center mr-4 shadow-md">
+                                <span class="text-xl font-bold text-purple-600">${q.id}</span>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white">${q.question}</h2>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                        ${q.options.map((option, index) => `
+                            <div class="answer-card rounded-xl p-6 bg-white shadow-lg border-2 border-gray-200 cursor-pointer transition-all duration-300 ${userAnswers[currentQuestion] === index ? 'selected' : ''} ${userAnswers[currentQuestion] !== null ? (option.correct ? 'correct' : (userAnswers[currentQuestion] === index ? 'incorrect' : '')) : ''}" 
+                                 onclick="selectAnswer(${index})">
+                                <div class="flex items-center">
+                                    <div class="w-10 h-10 flex items-center justify-center rounded-full ${userAnswers[currentQuestion] !== null ? (option.correct ? 'bg-green-100 text-green-600' : (userAnswers[currentQuestion] === index ? 'bg-red-100 text-red-600' : 'bg-gray-100 text-gray-600')) : 'bg-gray-100 text-gray-600'} mr-4 font-bold">
+                                        ${String.fromCharCode(65 + index)}
+                                    </div>
+                                    <span class="text-lg font-medium ${userAnswers[currentQuestion] !== null ? (option.correct ? 'text-green-700' : (userAnswers[currentQuestion] === index ? 'text-red-700' : 'text-gray-700')) : 'text-gray-700'}">${option.text}</span>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    ${userAnswers[currentQuestion] !== null ? `
+                        <div class="calc-box rounded-2xl p-8 mb-8 shadow-xl text-white fade-in">
+                            <div class="flex items-start mb-4">
+                                <div class="bg-white/20 rounded-full w-10 h-10 flex items-center justify-center mr-4 mt-1">
+                                    <span class="text-xl">📊</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-xl font-bold mb-2">Méthode de calcul :</h3>
+                                    <div class="bg-white/10 rounded-lg p-4 mb-4">
+                                        <div class="font-mono text-lg">${q.calculation}</div>
+                                    </div>
+                                    <p class="text-lg"><strong>Explication :</strong> ${q.explanation}</p>
+                                    ${q.options[userAnswers[currentQuestion]].correct ? 
+                                        '<div class="mt-4 bg-green-500/30 rounded-lg p-3 inline-block"><span class="text-lg font-bold">✓ Bonne réponse !</span></div>' : 
+                                        '<div class="mt-4 bg-red-500/30 rounded-lg p-3 inline-block"><span class="text-lg font-bold">✗ Mauvaise réponse</span></div>'
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+
+            document.getElementById('current-question').textContent = q.id;
+            document.getElementById('score').textContent = score;
+            
+            // Update button states
+            document.getElementById('prev-btn').disabled = currentQuestion === 0;
+            document.getElementById('next-btn').textContent = currentQuestion === questions.length - 1 ? 'Voir les résultats' : 'Question suivante →';
+        }
+
+        function selectAnswer(index) {
+            if (userAnswers[currentQuestion] !== null) return;
+            
+            userAnswers[currentQuestion] = index;
+            
+            // Calculate score if this is first answer
+            if (questions[currentQuestion].options[index].correct) {
+                score++;
+            }
+            
+            renderQuestion();
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                renderQuestion();
+            } else {
+                showResults();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                renderQuestion();
+            }
+        }
+
+        function showResults() {
+            document.getElementById('questions-container').style.display = 'none';
+            document.getElementById('prev-btn').style.display = 'none';
+            document.getElementById('next-btn').style.display = 'none';
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('final-score').textContent = score;
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            userAnswers = new Array(questions.length).fill(null);
+            score = 0;
+            document.getElementById('questions-container').style.display = 'block';
+            document.getElementById('prev-btn').style.display = 'flex';
+            document.getElementById('next-btn').style.display = 'flex';
+            document.getElementById('results').classList.add('hidden');
+            renderQuestion();
+        }
+
+        // Event listeners
+        document.getElementById('next-btn').addEventListener('click', nextQuestion);
+        document.getElementById('prev-btn').addEventListener('click', prevQuestion);
+        document.getElementById('restart-btn').addEventListener('click', restartQuiz);
+
+        // Global functions for inline onclick
+        window.selectAnswer = selectAnswer;
+
+        // Initialize
+        renderQuestion();
+    </script>
+</body>
+</html>
